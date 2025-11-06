@@ -1,5 +1,7 @@
 <script setup></script>
 
-<template></template>
+<template>
+    THIS PAGE HAS NOT BEEN FINISHED YET
+</template>
 
 <style scoped></style>
