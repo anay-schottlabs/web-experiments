@@ -32,7 +32,4 @@ const imageDim = 250
 .card-title {
   color: #FFCC00;
 }
-.btn {
-  color: #090040
-}
 </style>

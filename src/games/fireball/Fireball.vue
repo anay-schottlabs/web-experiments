@@ -1,19 +1,24 @@
 <script setup>
 import { ref, computed } from "vue"
 
+// image sizes
 const iconDim = 50
 const optionIconDim = 75
 
+// the charge and shield counts for the player
 const charges = ref(0)
 const shields = ref(3)
+// charge and shield counts for the computer
 const compCharges = ref(0)
 const compShields = ref(3)
 
+// actions
 const fireball = "FIREBALL"
 const charge = "CHARGE"
 const shield = "SHIELD"
 const currentAction = ref(charge)
 
+// check if an icon should be grayed out
 function isGrayscale(index, count) {
     return index >= count
 }
@@ -63,6 +68,23 @@ function act() {
         if (!canShield.value && canFireball.value) currentAction.value = fireball
     }
 }
+
+// game loop
+
+const isPlaying = ref(false)
+const timer = ref(3)
+
+function startGame() {
+    isPlaying.value = true
+
+    setInterval(() => {
+        timer.value--
+        if (timer.value == 0) {
+            act()
+            timer.value = 3
+        }
+    }, 750)
+}
 </script>
 
 <template>
@@ -91,11 +113,20 @@ function act() {
             </div>
         </div>
         <hr class="border border-2 border-white opacity-100">
+        
+        <!-- COMPUTER SIDE ABOVE -->
+
         <div class="row">
-            <div class="col fw-bold big-text title">
-                GO
+            <div v-if="isPlaying" class="col fw-bold big-text title">
+                {{ timer }}
+            </div>
+            <div v-else class="col btn btn-primary fs-1 fw-bold title btn-lg mx-5 my-3" @click="startGame">
+                Play
             </div>
         </div>
+
+        <!-- PLAYER SIDE BELOW -->
+
         <hr class="border border-2 border-white opacity-100">
         <div class="row my-4">
             <div class="col fw-bold fs-1 title">
@@ -149,7 +180,6 @@ function act() {
                 </div>
             </button>
         </div>
-        <button @click="act">Act</button>
     </div>
 </template>
 
