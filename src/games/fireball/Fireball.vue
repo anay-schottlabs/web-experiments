@@ -31,33 +31,37 @@ const canShield = computed(() => {
     return shields.value > 0
 })
 
-// after every action is called, we need to select a new one by default
-// this method checks for possible actions in sequence and selects one
-function getDefaultAction() {
-}
-
 // pick the action (this will update UI as well)
 function selectAction(action) {
-    currentAction.value = action;
+    currentAction.value = action
 }
 
 // making the change to values of shields and charges based on the action
 function act() {
     if (currentAction.value == charge) {
+        // charging gives us a charge
         charges.value++
+        // not shielding resets shields
+        shields.value = 3
+        // if we can't charge anymore, select fireball as the default option
+        if (!canCharge.value) currentAction.value = fireball
     }
     else if (currentAction.value == fireball) {
+        // fireball consumes one charge
         charges.value--
+        // not shielding resets shields
+        shields.value = 3
+        // if we're out of charges, select charge as the default option
+        if (!canFireball.value) currentAction.value = charge
     }
     else if (currentAction.value == shield) {
+        // shielding consumes one shield
         shields.value--
+        // if we're out of shields and can charge, select that as the default option
+        if (!canShield.value && canCharge.value) currentAction.value = charge
+        // if we're out of shields, can't charge, but can fireball, that is the default option
+        if (!canShield.value && canFireball.value) currentAction.value = fireball
     }
-
-    // since the values of charges and shields changes
-    // the default action may not be the same
-    // so this gets the new default action
-    currentAction.value = getDefaultAction()
-    console.log(currentAction.value)
 }
 </script>
 
