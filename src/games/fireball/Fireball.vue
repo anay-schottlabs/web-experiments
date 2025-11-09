@@ -1,39 +1,71 @@
 <script setup>
 import { ref, computed } from "vue"
+import fireballImg from "./fireball_fireball.jpg"
+import chargeImg from "./fireball_charge.jpg"
+import shieldImg from "./fireball_shield.jpg"
 
 // image sizes
 const iconDim = 50
 const optionIconDim = 75
+const evalIconDim = 125
 
 // the charge and shield counts for the player
-const charges = ref(0)
+const charges = ref(1)
 const shields = ref(3)
 // charge and shield counts for the computer
-const compCharges = ref(0)
+const compCharges = ref(1)
 const compShields = ref(3)
 
 // actions
 const fireball = "FIREBALL"
 const charge = "CHARGE"
 const shield = "SHIELD"
+
+const compAction = ref(charge)
+
+// current action changes as soon as we act
 const currentAction = ref(charge)
+// the choice is rendered after acting
+// so we need a variable to store the chosen action
+// otherwise it will change
+const chosenAction = ref(charge)
+
+// Fetch images for the selected action
+function getImageFromAction(action)  {
+    switch (action) {
+        case fireball:
+            return fireballImg
+        case charge:
+            return chargeImg
+        case shield:
+            return shieldImg
+    }
+}
+const playerImage = computed(() => getImageFromAction(chosenAction.value))
+const compImage = computed(() => getImageFromAction(compAction.value))
 
 // check if an icon should be grayed out
 function isGrayscale(index, count) {
     return index >= count
 }
 
-// need at least 1 charge to use fireball
+// determining if we can perform an action
+function canAct(action, charges, shields) {
+    // need at least 1 charge to use fireball
+    if (action == fireball) return charges > 0
+    // if we don't have full charges already, we can charge
+    if (action == charge) return charges < 3
+    // if we have shield slots left, we can shield
+    if (action == shield) return shields > 0
+}
 const canFireball = computed(() => {
-    return charges.value > 0
+    return canAct(fireball, charges.value, shields.value)
 })
-// if we don't have full charges already, we can charge
 const canCharge = computed(() => {
-    return charges.value < 3
+    return canAct(charge, charges.value, shields.value)
 })
-// if we have shield slots left, we can shield
 const canShield = computed(() => {
-    return shields.value > 0
+    return canAct(shield, charges.value, shields.value)
 })
 
 // pick the action (this will update UI as well)
@@ -42,53 +74,100 @@ function selectAction(action) {
 }
 
 // making the change to values of shields and charges based on the action
-function act() {
-    if (currentAction.value == charge) {
+function act(actionVar, chargesVar, shieldsVar, isPlayer) {
+    if (actionVar.value == charge) {
         // charging gives us a charge
-        charges.value++
+        chargesVar.value++
         // not shielding resets shields
-        shields.value = 3
+        shieldsVar.value = 3
         // if we can't charge anymore, select fireball as the default option
-        if (!canCharge.value) currentAction.value = fireball
+        if (!canCharge.value && isPlayer) currentAction.value = fireball
     }
-    else if (currentAction.value == fireball) {
+    else if (actionVar.value == fireball) {
         // fireball consumes one charge
-        charges.value--
+        chargesVar.value--
         // not shielding resets shields
-        shields.value = 3
+        shieldsVar.value = 3
         // if we're out of charges, select charge as the default option
-        if (!canFireball.value) currentAction.value = charge
+        if (!canFireball.value && isPlayer) currentAction.value = charge
     }
-    else if (currentAction.value == shield) {
+    else if (actionVar.value == shield) {
         // shielding consumes one shield
-        shields.value--
+        shieldsVar.value--
         // if we're out of shields and can charge, select that as the default option
-        if (!canShield.value && canCharge.value) currentAction.value = charge
+        if (!canShield.value && canCharge.value && isPlayer) currentAction.value = charge
         // if we're out of shields, can't charge, but can fireball, that is the default option
-        if (!canShield.value && canFireball.value) currentAction.value = fireball
+        if (!canShield.value && canFireball.value && isPlayer) currentAction.value = fireball
     }
 }
 
-// game loop
+// game states
+const notPlaying = "NOT PLAYING"
+const playing = "PLAYING"
+const evaluating = "EVALUATING"
+const gameState = ref(notPlaying)
 
-const isPlaying = ref(false)
+// outcomes
+const playerScore = "+1"
+const compScore = "-1"
+const tie = "-"
+const outcome = ref()
+
+// game loop
 const timer = ref(3)
 
-function startGame() {
-    isPlaying.value = true
-
-    setInterval(() => {
+function gameLoop() {
+    let timeLoop = setInterval(() => {
         timer.value--
         if (timer.value == 0) {
-            act()
-            timer.value = 3
+            // fill up the compActions array with only valid actions
+            const compActions = []
+            if (canAct(fireball, compCharges.value, compShields.value)) compActions.push(fireball)
+            if (canAct(charge, compCharges.value, compShields.value)) compActions.push(charge)
+            if (canAct(shield, compCharges.value, compShields.value)) compActions.push(shield)
+            
+            // pick one random action for the computer to do
+            var randomIndex = Math.floor(Math.random() * compActions.length)
+            compAction.value = compActions[randomIndex]
+
+            // change player and comp stats
+            chosenAction.value = currentAction.value
+            act(currentAction, charges, shields, true) // change player stats
+            act(compAction, compCharges, compShields, false) // change comp stats
+
+            // determine outcome
+            // fireball beats charge
+            // otherwise it's a tie
+            if (chosenAction.value == fireball && compAction.value == charge) {
+                outcome.value = playerScore
+            }
+            else if (compAction.value == fireball && chosenAction.value == charge) {
+                outcome.value = compScore
+            }
+            else outcome.value = tie
+
+            // change game state
+            gameState.value = evaluating
+
+            // exit the timer loop
+            clearInterval(timeLoop)
+
+            setTimeout(() => {
+                startRound()
+            }, 3000)
         }
     }, 750)
+}
+
+function startRound() {
+    gameState.value = playing // change game state
+    timer.value = 3 // reset timer
+    gameLoop()
 }
 </script>
 
 <template>
-    <div class="container text-white text-center flex w-50">
+    <div class="container text-white text-center flex w-75">
         <div class="row my-4">
             <div class="col">
                 <img
@@ -117,11 +196,36 @@ function startGame() {
         <!-- COMPUTER SIDE ABOVE -->
 
         <div class="row">
-            <div v-if="isPlaying" class="col fw-bold big-text title">
+            <!-- Display the timer if we're playing -->
+            <div v-if="gameState == playing" class="col fw-bold big-text title">
                 {{ timer }}
             </div>
-            <div v-else class="col btn btn-primary fs-1 fw-bold title btn-lg mx-5 my-3" @click="startGame">
+            <!-- Show a play button if we're not playing -->
+            <div
+            v-else-if="gameState == notPlaying"
+            class="col btn btn-primary fs-1 fw-bold title btn-lg m-5"
+            @click="startRound">
                 Play
+            </div>
+            <!-- If the timer is up and we're evaluating: -->
+            <!-- Show the chosen icons of player and computer -->
+            <!-- Show who won the round -->
+            <div v-else-if="gameState == evaluating" class="row d-flex align-items-center">
+                <div class="col">
+                    <img
+                    :src="playerImage"
+                    :width="evalIconDim"
+                    :height="evalIconDim">
+                </div>
+                <div class="col">
+                    <p class="fw-bold big-text">{{ outcome }}</p>
+                </div>
+                <div class="col">
+                    <img
+                    :src="compImage"
+                    :width="evalIconDim"
+                    :height="evalIconDim">
+                </div>
             </div>
         </div>
 
