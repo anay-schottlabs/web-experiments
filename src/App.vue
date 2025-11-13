@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar navbar-expand-lg p-4 flex align-items-baseline">
-    <router-link class="navbar-brand title fw-bold fs-1 ps-2 pe-3" to="/">Bad Bytes</router-link>
+    <router-link class="navbar-brand title fw-bold fs-1 ps-2 pe-3" to="/">Game Fridge</router-link>
     <router-link class="nav-link px-3 fs-3" to="/games">Games</router-link>
     <router-link class="nav-link px-3 fs-3" to="/about">About</router-link>
   </nav>
