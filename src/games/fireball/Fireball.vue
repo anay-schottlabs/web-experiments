@@ -9,12 +9,14 @@ const iconDim = 50
 const optionIconDim = 75
 const evalIconDim = 125
 
-// the charge and shield counts for the player
+// the charge and shield counts for the player, also health
 const charges = ref(1)
 const shields = ref(3)
-// charge and shield counts for the computer
+const health = ref(3)
+// charge and shield counts for the computer, also health
 const compCharges = ref(1)
 const compShields = ref(3)
+const compHealth = ref(3)
 
 // actions
 const fireball = "FIREBALL"
@@ -104,6 +106,8 @@ function act(actionVar, chargesVar, shieldsVar, isPlayer) {
 const notPlaying = "NOT PLAYING"
 const playing = "PLAYING"
 const evaluating = "EVALUATING"
+const playerWin = "PLAYER WIN"
+const compWin = "COMP WIN"
 const gameState = ref(notPlaying)
 
 // outcomes
@@ -138,12 +142,23 @@ function gameLoop() {
             // fireball beats charge
             // otherwise it's a tie
             if (chosenAction.value == fireball && compAction.value == charge) {
-                outcome.value = playerScore
+                outcome.value = playerScore // displays "+1"
+                compHealth.value-- // subtracts 1 from comp health
             }
             else if (compAction.value == fireball && chosenAction.value == charge) {
-                outcome.value = compScore
+                outcome.value = compScore // displays "-1"
+                health.value-- // subtracts 1 from player health
             }
             else outcome.value = tie
+
+            // if player health is 0 computer wins
+            if (health.value == 0) {
+                gameState.value = compWin
+            }
+            // if computer health is 0 player wins
+            else if (compHealth.value == 0) {
+                gameState.value = playerWin
+            }
 
             // change game state
             gameState.value = evaluating
@@ -188,10 +203,11 @@ function startRound() {
             </div>
             <div class="col">
                 <img
-                    v-for="(_) in Array.from({ length: 3 })"
+                    v-for="(_, index) in Array.from({ length: 3 })"
                     src="./fireball_heart.jpg"
                     :width="iconDim"
-                    :height="iconDim">
+                    :height="iconDim"
+                    :class="{ grayscale: isGrayscale(index, compHealth) }">
                 </img>
             </div>
 
@@ -246,10 +262,11 @@ function startRound() {
             </div>
             <div class="col">
                 <img
-                    v-for="(_) in Array.from({ length: 3 })"
+                    v-for="(_, index) in Array.from({ length: 3 })"
                     src="./fireball_heart.jpg"
                     :width="iconDim"
-                    :height="iconDim">
+                    :height="iconDim"
+                    :class="{ grayscale: isGrayscale(index, health) }">
                 </img>
             </div>
             <div class="col">
