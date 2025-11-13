@@ -20,7 +20,6 @@ const compShields = ref(3)
 const fireball = "FIREBALL"
 const charge = "CHARGE"
 const shield = "SHIELD"
-
 const compAction = ref(charge)
 
 // current action changes as soon as we act
@@ -187,6 +186,15 @@ function startRound() {
                     :class="{ grayscale: isGrayscale(index, compCharges) }">
                 </img>
             </div>
+            <div class="col">
+                <img
+                    v-for="(_) in Array.from({ length: 3 })"
+                    src="./fireball_heart.jpg"
+                    :width="iconDim"
+                    :height="iconDim">
+                </img>
+            </div>
+
             <div class="col fw-bold fs-1 title">
                 Computer
             </div>
@@ -235,6 +243,14 @@ function startRound() {
         <div class="row my-4">
             <div class="col fw-bold fs-1 title">
                 You
+            </div>
+            <div class="col">
+                <img
+                    v-for="(_) in Array.from({ length: 3 })"
+                    src="./fireball_heart.jpg"
+                    :width="iconDim"
+                    :height="iconDim">
+                </img>
             </div>
             <div class="col">
                 <img
