@@ -1,9 +1,11 @@
 <script setup>
+import fireballLogo from "./games/fireball/fireball_logo.jpg"
+
 const games = [
   {
     "name": "Fireball",
     "url": "/games/fireball",
-    "logo": "./src/games/fireball/fireball_logo.jpg",
+    "logo": fireballLogo,
     "description": "A fast-paced 1v1 duel against the computer. Do you have what it takes to win?"
   }
 ]
