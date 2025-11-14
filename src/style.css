@@ -1,1 +1,8 @@
 @import "tailwindcss";
+@plugin "daisyui";
+
+@theme {
+    --color-palette-white: #F5F5F5;
+    --color-palette-blue: #3891AC;
+    --color-palette-black: #252323;
+}

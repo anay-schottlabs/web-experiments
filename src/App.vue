@@ -1,25 +1,22 @@
 <template>
-  <nav class="navbar navbar-expand-lg p-4 flex align-items-baseline">
-    <router-link class="navbar-brand title fw-bold fs-1 ps-2 pe-3" to="/">Game Fridge</router-link>
-    <router-link class="nav-link px-3 fs-3" to="/games">Games</router-link>
-    <router-link class="nav-link px-3 fs-3" to="/about">About</router-link>
-  </nav>
-  <div class="ps-4">
+  <div class="navbar bg-palette-blue p-5 rounded-2xl shadow-2xl">
+    <div class="flex-1">
+      <router-link to="/" class="btn btn-ghost text-3xl hover:bg-palette-black rounded-xl p-8">GameFridge</router-link>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        <li>
+          <router-link to="/games" class="btn btn-ghost text-xl mx-3 hover:bg-palette-black">Games</router-link>
+        </li>
+        <li>
+          <router-link to="/about" class="btn btn-ghost text-xl mx-3 hover:bg-palette-black">About</router-link>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="p-10">
     <router-view></router-view>
   </div>
 </template>
 
-<style scoped>
-.navbar {
-  background-color: #090040;
-}
-.navbar-brand {
-  color: #FFCC00;
-}
-.nav-link {
-  color: white;
-}
-a:hover {
-  opacity: 0.75;
-}
-</style>
+<style scoped></style>
