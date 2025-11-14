@@ -32,8 +32,8 @@ const currentAction = ref(charge)
 const chosenAction = ref(charge)
 
 // timing variables
-const showOutcomeDelay = 3000 * 0.1
-const countdownTick = 750 * 0.1
+const showOutcomeDelay = 3000
+const countdownTick = 750
 
 // Fetch images for the selected action
 function getImageFromAction(action)  {
