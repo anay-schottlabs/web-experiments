@@ -31,6 +31,10 @@ const currentAction = ref(charge)
 // otherwise it will change
 const chosenAction = ref(charge)
 
+// timing variables
+const showOutcomeDelay = 3000 * 0.1
+const countdownTick = 750 * 0.1
+
 // Fetch images for the selected action
 function getImageFromAction(action)  {
     switch (action) {
@@ -113,7 +117,7 @@ const gameState = ref(notPlaying)
 // outcomes
 const playerScore = "+1"
 const compScore = "-1"
-const tie = "-"
+const tie = "0"
 const outcome = ref()
 
 // game loop
@@ -151,15 +155,6 @@ function gameLoop() {
             }
             else outcome.value = tie
 
-            // if player health is 0 computer wins
-            if (health.value == 0) {
-                gameState.value = compWin
-            }
-            // if computer health is 0 player wins
-            else if (compHealth.value == 0) {
-                gameState.value = playerWin
-            }
-
             // change game state
             gameState.value = evaluating
 
@@ -168,20 +163,42 @@ function gameLoop() {
 
             setTimeout(() => {
                 startRound()
-            }, 3000)
+            }, showOutcomeDelay)
         }
-    }, 750)
+    }, countdownTick)
 }
 
-function startRound() {
-    gameState.value = playing // change game state
-    timer.value = 3 // reset timer
-    gameLoop()
+function startRound(restartGame=false) {
+    // if player health is 0 computer wins
+    if (health.value == 0 && !restartGame) {
+        gameState.value = compWin
+    }
+    // if computer health is 0 player wins
+    else if (compHealth.value == 0 && !restartGame) {
+        gameState.value = playerWin
+    }
+    // if no one won or lost, play the round as normal
+    else {
+        gameState.value = playing // change game state
+        timer.value = 3 // reset timer
+        if (restartGame) {
+            charges.value = 1
+            shields.value = 3
+            health.value = 3
+            compCharges.value = 1
+            compShields.value = 3
+            compHealth.value = 3
+            currentAction.value = charge
+            compAction.value = charge
+            chosenAction.value = charge
+        }
+        gameLoop()
+    }
 }
 </script>
 
 <template>
-    <div class="container text-white text-center flex w-75">
+    <div class="container text-white text-center w-75">
         <div class="row my-4">
             <div class="col">
                 <img
@@ -221,14 +238,14 @@ function startRound() {
 
         <div class="row">
             <!-- Display the timer if we're playing -->
-            <div v-if="gameState == playing" class="col fw-bold big-text title">
+            <div v-if="gameState == playing" class="col fw-bold big-text">
                 {{ timer }}
             </div>
             <!-- Show a play button if we're not playing -->
             <div
             v-else-if="gameState == notPlaying"
             class="col btn btn-primary fs-1 fw-bold title btn-lg m-5"
-            @click="startRound">
+            @click="() => startRound(true)">
                 Play
             </div>
             <!-- If the timer is up and we're evaluating: -->
@@ -242,13 +259,29 @@ function startRound() {
                     :height="evalIconDim">
                 </div>
                 <div class="col">
-                    <p class="fw-bold big-text">{{ outcome }}</p>
+                    <p
+                    class="fw-bold big-text"
+                    :class="{ negative: outcome == compScore, positive: outcome == playerScore, neutral: outcome == tie }">
+                        {{ outcome }}
+                    </p>
                 </div>
                 <div class="col">
                     <img
                     :src="compImage"
                     :width="evalIconDim"
                     :height="evalIconDim">
+                </div>
+            </div>
+            <div v-else-if="gameState == playerWin || gameState == compWin" class="row">
+                <p
+                class="fw-bold big-text col"
+                :class="{ negative: gameState == compWin, positive: gameState == playerWin }">
+                    {{ gameState == playerWin ? "You Win!" : "You Lose!" }}
+                </p>
+                <div
+                class="col btn btn-primary fs-1 fw-bold title btn-lg m-5 d-flex align-items-center justify-content-center"
+                @click="() => startRound(true)">
+                    Play Again
                 </div>
             </div>
         </div>
@@ -343,5 +376,17 @@ function startRound() {
 
 .grayscale {
     filter: grayscale(100%);
+}
+
+.negative {
+    color: #E4572E;
+}
+
+.positive {
+    color: #81C14B;
+}
+
+.neutral {
+    color: grey;
 }
 </style>
