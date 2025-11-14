@@ -3,7 +3,7 @@ const games = [
   {
     "name": "Fireball",
     "url": "/games/fireball",
-    "logo": "./games/fireball/fireball_logo.jpg",
+    "logo": "./src/games/fireball/fireball_logo.jpg",
     "description": "A fast-paced 1v1 duel against the computer. Do you have what it takes to win?"
   }
 ]
