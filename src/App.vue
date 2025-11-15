@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar bg-palette-blue p-5 rounded-2xl shadow-xl">
+  <div class="navbar bg-palette-blue p-5 shadow-xl sticky z-1 top-0">
     <div class="flex-1">
       <router-link to="/" class="btn btn-ghost text-3xl hover:bg-palette-black rounded-xl p-8">GameFridge</router-link>
     </div>
@@ -14,9 +14,7 @@
       </ul>
     </div>
   </div>
-  <div class="pt-10">
+  <div class="p-6">
     <router-view></router-view>
   </div>
 </template>
-
-<style scoped></style>
