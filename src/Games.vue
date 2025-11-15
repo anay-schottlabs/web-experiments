@@ -7,13 +7,17 @@ const games = [
     "url": "/games/fireball",
     "logo": fireballLogo,
     "description": "A fast-paced 1v1 duel against the computer. Do you have what it takes to win?"
+  },
+  {
+    "name": "Fireball",
+    "url": "/games/fireball",
+    "logo": fireballLogo,
+    "description": "A fast-paced 1v1 duel against the computer. Do you have what it takes to win?"
   }
 ]
-
-const imageDim = 250
 </script>
 
-<template>
+<!-- <template>
   <div v-for="game in games">
     <div class="card w-50 p-3 rounded-5">
       <img class="card-image-top d-block mx-auto" :src="game.logo" :width="imageDim" :height="imageDim">
@@ -24,14 +28,19 @@ const imageDim = 250
       </div>
     </div>
   </div>
-</template>
+</template> -->
 
-<style scoped>
-.card {
-  background-color: #090040;
-  border: 0.5em solid #FFCC00;
-}
-.card-title {
-  color: #FFCC00;
-}
-</style>
+<template>
+  <div class="grid grid-cols-2 gap-5">
+    <div
+    v-for="game in games"
+    class="card bg-palette-white shadow-lg rounded-2xl hover:ring-4 hover:ring-palette-blue hover:shadow-2xl transition-all">
+      <figure>
+        <img :src="game.logo">
+      </figure>
+      <div class="card-body">
+        <h1 class="card-title text-palette-black">{{ game.name }}</h1>
+      </div>
+    </div>
+  </div>
+</template>
