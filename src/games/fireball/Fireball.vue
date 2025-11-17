@@ -4,11 +4,6 @@ import fireballImg from "./fireball_fireball.jpg"
 import chargeImg from "./fireball_charge.jpg"
 import shieldImg from "./fireball_shield.jpg"
 
-// image sizes
-const iconDim = 50
-const optionIconDim = 75
-const evalIconDim = 125
-
 // the charge and shield counts for the player, also health
 const charges = ref(1)
 const shields = ref(3)
@@ -198,88 +193,73 @@ function startRound(restartGame=false) {
 </script>
 
 <template>
-    <div class="container text-white text-center w-75">
-        <div class="row my-4">
-            <div class="col">
+    <div class="px-[10vw]">
+        <div class="grid grid-cols-4 gap-x-[13vw] py-10">
+            <div class="grid grid-cols-3">
                 <img
                     v-for="(_, index) in Array.from({ length: 3 })"
                     src="./fireball_shield.jpg"
-                    :width="iconDim"
-                    :height="iconDim"
                     :class="{ grayscale: isGrayscale(index, compShields) }">
                 </img>
             </div>
-            <div class="col">
+            <div class="grid grid-cols-3">
                 <img
                     v-for="(_, index) in Array.from({ length: 3 })"
                     src="./fireball_charge.jpg"
-                    :width="iconDim"
-                    :height="iconDim"
                     :class="{ grayscale: isGrayscale(index, compCharges) }">
                 </img>
             </div>
-            <div class="col">
+            <div class="grid grid-cols-3">
                 <img
                     v-for="(_, index) in Array.from({ length: 3 })"
                     src="./fireball_heart.jpg"
-                    :width="iconDim"
-                    :height="iconDim"
                     :class="{ grayscale: isGrayscale(index, compHealth) }">
                 </img>
             </div>
-
-            <div class="col fw-bold fs-1 title">
-                Computer
+            <div class="text-palette-black text-center font-bold text-6xl">
+                Bot
             </div>
         </div>
-        <hr class="border border-2 border-white opacity-100">
+        <hr class="border-palette-black border-3">
         
         <!-- COMPUTER SIDE ABOVE -->
 
-        <div class="row">
+        <div class="py-5 text-center">
             <!-- Display the timer if we're playing -->
-            <div v-if="gameState == playing" class="col fw-bold big-text">
+            <div v-if="gameState == playing" class="text-palette-black text-9xl font-bold">
                 {{ timer }}
             </div>
             <!-- Show a play button if we're not playing -->
             <div
             v-else-if="gameState == notPlaying"
-            class="col btn btn-primary fs-1 fw-bold title btn-lg m-5"
+            class="btn bg-palette-blue border-none shadow-none text-4xl p-10 w-[30vw]
+            hover:shadow-2xl transition-all drop-shadow-[0_0px_10px_rgba(0,0,0,0.1)]"
             @click="() => startRound(true)">
                 Play
             </div>
             <!-- If the timer is up and we're evaluating: -->
             <!-- Show the chosen icons of player and computer -->
             <!-- Show who won the round -->
-            <div v-else-if="gameState == evaluating" class="row d-flex align-items-center">
-                <div class="col">
-                    <img
-                    :src="playerImage"
-                    :width="evalIconDim"
-                    :height="evalIconDim">
-                </div>
-                <div class="col">
-                    <p
-                    class="fw-bold big-text"
-                    :class="{ negative: outcome == compScore, positive: outcome == playerScore, neutral: outcome == tie }">
-                        {{ outcome }}
-                    </p>
-                </div>
-                <div class="col">
-                    <img
-                    :src="compImage"
-                    :width="evalIconDim"
-                    :height="evalIconDim">
-                </div>
-            </div>
-            <div v-else-if="gameState == playerWin || gameState == compWin" class="row">
+            <div v-else-if="gameState == evaluating" class="grid grid-cols-3 flex items-center">
+                <img :src="playerImage" class="w-[15vh] h-[15vh] place-self-center">
                 <p
-                class="fw-bold big-text col"
-                :class="{ negative: gameState == compWin, positive: gameState == playerWin }">
+                class="font-bold text-9xl"
+                :class="{ 'text-palette-negative': outcome == compScore,
+                'text-palette-positive': outcome == playerScore, 'text-palette-neutral': outcome == tie }">
+                    {{ outcome }}
+                </p>
+                <img :src="compImage" class="w-[15vh] h-[15vh] place-self-center">
+            </div>
+            <!-- Show who won the the game -->
+            <div
+            v-else-if="gameState == playerWin || gameState == compWin"
+            class="grid grid-cols-2 flex items-center">
+                <p
+                class="font-bold text-8xl text-palette-black">
                     {{ gameState == playerWin ? "You Win!" : "You Lose!" }}
                 </p>
                 <div
-                class="col btn btn-primary fs-1 fw-bold title btn-lg m-5 d-flex align-items-center justify-content-center"
+                class="btn bg-palette-blue border-none shadow-none text-4xl p-10 w-[30vw]"
                 @click="() => startRound(true)">
                     Play Again
                 </div>
@@ -288,64 +268,82 @@ function startRound(restartGame=false) {
 
         <!-- PLAYER SIDE BELOW -->
 
-        <hr class="border border-2 border-white opacity-100">
-        <div class="row my-4">
-            <div class="col fw-bold fs-1 title">
+        <hr class="border-palette-black border-3">
+        <div class="grid grid-cols-4 gap-[13vw] py-10">
+            <div class="text-palette-black text-center font-bold text-6xl">
                 You
             </div>
-            <div class="col">
+            <div class="grid grid-cols-3">
                 <img
                     v-for="(_, index) in Array.from({ length: 3 })"
                     src="./fireball_heart.jpg"
-                    :width="iconDim"
-                    :height="iconDim"
                     :class="{ grayscale: isGrayscale(index, health) }">
                 </img>
             </div>
-            <div class="col">
+            <div class="grid grid-cols-3">
                 <img
                     v-for="(_, index) in Array.from({ length: 3 })"
                     src="./fireball_charge.jpg"
-                    :width="iconDim"
-                    :height="iconDim"
                     :class="{ grayscale: isGrayscale(index, charges) }">
                 </img>
             </div>
-            <div class="col">
+            <div class="grid grid-cols-3">
                 <img
                     v-for="(_, index) in Array.from({ length: 3 })"
                     src="./fireball_shield.jpg"
-                    :width="iconDim"
-                    :height="iconDim"
                     :class="{ grayscale: isGrayscale(index, shields) }">
                 </img>
             </div>
         </div>
-        <div class="row column-gap-3 my-4">
+        <div class="grid grid-cols-3 gap-5">
             <button
-            class="col card pt-3 rounded-5"
-            :class="{ selected: currentAction == fireball, disabled: !canFireball }"
+            class="card bg-palette-white shadow-lg rounded-2xl transition-all drop-shadow-[0_0px_10px_rgba(0,0,0,0.1)] h-[25vh]"
+            :class="{
+                selected: currentAction == fireball,
+                disabled: !canFireball,
+                'hover:ring-4 hover:ring-palette-blue hover:shadow-2xl hover:cursor-pointer': canFireball
+            }"
             @click="() => { canFireball ? selectAction(fireball) : null }">
-                <img class="card-image-top d-block mx-auto" src="./fireball_fireball.jpg" :width="optionIconDim" :height="optionIconDim">
-                <div class="card-body d-grid fs-3 fw-bold">
+                <figure>
+                    <img class="scale-20" src="./fireball_fireball.jpg">
+                </figure>
+                <div
+                class="card-body card-title text-4xl font-bold transition-all"
+                :class="{ 'text-palette-black': currentAction != fireball && canFireball }">
                     Fireball
                 </div>
             </button>
             <button
-            class="col card pt-3 rounded-5"
-            :class="{ selected: currentAction == charge, disabled: !canCharge}"
+            class="card bg-palette-white shadow-lg rounded-2xl transition-all drop-shadow-[0_0px_10px_rgba(0,0,0,0.1)] h-[25vh]"
+            :class="{
+                selected: currentAction == charge,
+                disabled: !canCharge,
+                'hover:ring-4 hover:ring-palette-blue hover:shadow-2xl hover:cursor-pointer': canCharge
+            }"
             @click="() => { canCharge ? selectAction(charge) : null }">
-                <img class="card-image-top d-block mx-auto" src="./fireball_charge.jpg" :width="optionIconDim" :height="optionIconDim">
-                <div class="card-body d-grid fs-3 fw-bold">
+                <figure>
+                    <img class="scale-20" src="./fireball_charge.jpg">
+                </figure>
+                <div
+                class="card-body card-title text-4xl font-bold transition-all"
+                :class="{ 'text-palette-black': currentAction != charge && canCharge }">
                     Charge
                 </div>
             </button>
             <button
-            class="col card pt-3 rounded-5"
-            :class="{ selected: currentAction == shield, disabled: !canShield }"
+            class="card bg-palette-white shadow-lg rounded-2xl transition-all drop-shadow-[0_0px_10px_rgba(0,0,0,0.1)] h-[25vh]"
+            :class="{
+                selected: currentAction == shield,
+                disabled: !canShield,
+                'hover:ring-4 hover:ring-palette-blue hover:shadow-2xl hover:cursor-pointer': canShield
+            }"
             @click="() => { canShield ? selectAction(shield) : null }">
-                <img class="card-image-top d-block mx-auto" src="./fireball_shield.jpg" :width="optionIconDim" :height="optionIconDim">
-                <div class="card-body d-grid fs-3 fw-bold">
+                <figure>
+                    <img class="scale-20" src="./fireball_shield.jpg">
+                </figure>
+                <div
+                class="card-body card-title text-4xl font-bold transition-all"
+                :class="{ 'text-palette-black': currentAction != shield && canShield }">
                     Shield
                 </div>
             </button>
@@ -354,39 +352,14 @@ function startRound(restartGame=false) {
 </template>
 
 <style scoped>
-.card {
-    background-color: #090040;
-    color: white;
-    border: 0.15em solid white;
-}
-
 .selected {
-    border: 0.4em dashed #FFCC00;
+    border: 0.4em solid var(--color-palette-blue);
+    color: var(--color-palette-blue);
 }
 
 .disabled {
-    border: 0.15em solid grey;
-    color: grey;
+    border: 0.2em solid grey;
+    color: var(--color-palette-neutral);
     cursor: default;
-}
-
-.big-text {
-    font-size: 7em;
-}
-
-.grayscale {
-    filter: grayscale(100%);
-}
-
-.negative {
-    color: #E4572E;
-}
-
-.positive {
-    color: #81C14B;
-}
-
-.neutral {
-    color: grey;
 }
 </style>

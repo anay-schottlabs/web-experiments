@@ -5,4 +5,7 @@
     --color-palette-white: #F5F5F5;
     --color-palette-blue: #3891AC;
     --color-palette-black: #252323;
+    --color-palette-positive: #81C14B;
+    --color-palette-negative: #E4572E;
+    --color-palette-neutral: gray;
 }
