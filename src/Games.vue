@@ -7,6 +7,12 @@ const games = [
     "url": "/games/fireball",
     "logo": fireballLogo,
     "description": "A fast-paced 1v1 duel against the computer. Do you have what it takes to win?"
+  },
+  {
+    "name": "Speech Clock",
+    "url": "/games/speech-clock",
+    "logo": fireballLogo, // placeholder logo
+    "description": "The undoubtedly best timer for speech. Has time signals and everything."
   }
 ]
 </script>
