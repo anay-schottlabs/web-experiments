@@ -1,5 +1,6 @@
 <script setup>
 import fireballLogo from "./games/fireball/fireball_logo.jpg"
+import speechClockLogo from "./games/speech_clock/speech_clock_logo.png"
 
 const games = [
   {
@@ -11,7 +12,7 @@ const games = [
   {
     "name": "Speech Clock",
     "url": "/games/speech-clock",
-    "logo": fireballLogo, // placeholder logo
+    "logo": speechClockLogo,
     "description": "The undoubtedly best timer for speech. Has time signals and everything."
   }
 ]
@@ -23,7 +24,7 @@ const games = [
     v-for="game in games"
     class="card bg-palette-white shadow-lg rounded-2xl hover:ring-4 hover:ring-palette-blue hover:shadow-2xl transition-all drop-shadow-[0_0px_10px_rgba(0,0,0,0.1)]">
       <figure>
-        <img :src="game.logo" class="scale-60">
+        <img :src="game.logo" class="w-[10vw] h-[20vh]">
       </figure>
       <div class="card-body">
         <h1 class="card-title text-palette-black text-3xl">{{ game.name }}</h1>
