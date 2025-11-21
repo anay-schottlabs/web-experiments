@@ -22,7 +22,7 @@ import logo from "./assets/gamefridge_logo.png"
     </div>
     <div class="flex-1 navbar-end">
       <div class="btn bg-palette-black text-white text-3xl p-7 hover:bg-palette-white
-      hover:text-palette-black border-3 shadow-none hover:italic">
+      hover:text-palette-black hover:border-3 hover:border-palette-black border shadow-none hover:italic">
         1.0.0
       </div>
     </div>
